@@ -1,0 +1,39 @@
+# Maintainer: l0nk <l0nk@altb.in>
+ 
+pkgname=spice-gtk
+pkgver=0.14
+#_pkgsver=e507
+pkgrel=4
+pkgdesc="SPICE client."
+arch=('x86_64' 'i686')
+url="http://spice-space.org"
+license=('GPL')
+options=(!libtool)
+makedepends=(intltool perl-text-csv vala python2-pyparsing)
+depends=(spice gtk2 usbredir)
+source=("http://spice-space.org/download/gtk/$pkgname-$pkgver.tar.bz2")
+md5sums=('c105e3b7f9c9eb293b0d6a8d35f6a5fd')
+
+build() {
+  #cd "$srcdir/$pkgname-$pkgver-$_pkgsver"
+  cd "$srcdir/$pkgname-$pkgver"
+#  patch -p1 <../spice-gtk.patch
+  #patch
+  sed -i 's,/usr/bin/env python,/usr/bin/python2,' spice-common/spice_codegen.py
+
+  ./configure --prefix=/usr \
+	--with-gtk=2.0 \
+	--with-python \
+	--enable-smartcard=no \
+	--enable-vala
+  make
+}
+
+package() {
+  #cd "$srcdir/$pkgname-$pkgver-$_pkgsver"
+  cd "$srcdir/$pkgname-$pkgver"
+
+  make -j1 DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=2 sw=2 et:
